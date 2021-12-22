@@ -29,7 +29,7 @@ app.post("/repositories", (request, response) => {
 
 app.put("/repositories/:id", (request, response) => {
   const { id } = request.params;
-  const { tittle, url, techs } = request.body;
+  const { title, url, techs } = request.body;
 
   const updatedRepository = repositories.find(repository => repository.id === id);
 
@@ -39,7 +39,7 @@ app.put("/repositories/:id", (request, response) => {
     return response.status(404).json({ error: "Repository not found" });
   }
 
-  updatedRepository.title = tittle;
+  updatedRepository.title = title;
   updatedRepository.url = url;
   updatedRepository.techs = techs;
 
