@@ -1,6 +1,6 @@
 const express = require("express");
 
-const { v4: uuidv4 } = require('uuid');
+const { v4: uuidv4, validate } = require('uuid');
 
 const app = express();
 
@@ -29,19 +29,21 @@ app.post("/repositories", (request, response) => {
 
 app.put("/repositories/:id", (request, response) => {
   const { id } = request.params;
-  const updatedRepository = request.body;
+  const { tittle, url, techs } = request.body;
 
-  repositoryIndex = repositories.findindex(repository => repository.id === id);
+  const updatedRepository = repositories.find(repository => repository.id === id);
 
-  if (repositoryIndex < 0) {
+  // repositoryIndex = repositories.findindex(repository => repository.id === id);
+
+  if (!updatedRepository) {
     return response.status(404).json({ error: "Repository not found" });
   }
 
-  const repository = { ...repositories[repositoryIndex], ...updatedRepository };
+  updatedRepository.title = tittle;
+  updatedRepository.url = url;
+  updatedRepository.techs = techs;
 
-  repositories[repositoryIndex] = repository;
-
-  return response.json(repository);
+  return response.json(updatedRepository);
 });
 
 app.delete("/repositories/:id", (request, response) => {
@@ -49,7 +51,7 @@ app.delete("/repositories/:id", (request, response) => {
 
   repositoryIndex = repositories.findIndex(repository => repository.id === id);
 
-  if (repositoryIndex > 0) {
+  if (repositoryIndex < 0) {
     return response.status(404).json({ error: "Repository not found" });
   }
 
@@ -69,7 +71,7 @@ app.post("/repositories/:id/like", (request, response) => {
 
   const likes = ++repositories[repositoryIndex].likes;
 
-  return response.json('likes');
+  return response.json({ likes });
 });
 
 module.exports = app;
